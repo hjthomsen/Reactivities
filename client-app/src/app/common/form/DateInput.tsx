@@ -2,7 +2,6 @@ import React from "react";
 import { FieldRenderProps } from "react-final-form";
 import { FormFieldProps, Form, Label } from "semantic-ui-react";
 import { DateTimePicker } from "react-widgets";
-import dateFnsLocalizer, { defaultFormats } from "react-widgets-date-fns";
 
 interface IProps
   extends FieldRenderProps<Date, HTMLInputElement>,
