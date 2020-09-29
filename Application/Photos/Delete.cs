@@ -42,6 +42,8 @@ namespace Application.Photos {
                 if (result != null)
                     throw new Exception ("Problem deleting the photo");
 
+                user.Photos.Remove (photo);
+
                 var success = await _context.SaveChangesAsync () > 0;
 
                 if (success) return Unit.Value;
