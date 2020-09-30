@@ -17,11 +17,11 @@ const ActivityDetailedChat = () => {
   } = rootStore.activityStore;
 
   useEffect(() => {
-    createHubConnection(activity!.id);
+    createHubConnection();
     return () => {
       stopHubConnection();
     };
-  }, [createHubConnection, stopHubConnection, activity]);
+  }, [createHubConnection, stopHubConnection]);
 
   return (
     <Fragment>
@@ -42,10 +42,7 @@ const ActivityDetailedChat = () => {
               <Comment key={comment.id}>
                 <Comment.Avatar src={comment.image || "/assets/user.png"} />
                 <Comment.Content>
-                  <Comment.Author
-                    as={Link}
-                    to={`/profiles/${comment.username}`}
-                  >
+                  <Comment.Author as={Link} to={`/profile/${comment.username}`}>
                     {comment.displayName}
                   </Comment.Author>
                   <Comment.Metadata>
@@ -55,14 +52,11 @@ const ActivityDetailedChat = () => {
                 </Comment.Content>
               </Comment>
             ))}
+
           <FinalForm
             onSubmit={addComment}
             render={({ handleSubmit, submitting, form }) => (
-              <Form
-                onSubmit={() => {
-                  handleSubmit()!.then(() => form.reset());
-                }}
-              >
+              <Form onSubmit={() => handleSubmit()!.then(() => form.reset())}>
                 <Field
                   name="body"
                   component={TextAreaInput}
@@ -70,11 +64,11 @@ const ActivityDetailedChat = () => {
                   placeholder="Add your comment"
                 />
                 <Button
+                  loading={submitting}
                   content="Add Reply"
                   labelPosition="left"
                   icon="edit"
                   primary
-                  loading={submitting}
                 />
               </Form>
             )}

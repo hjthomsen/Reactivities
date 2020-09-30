@@ -5,7 +5,7 @@ import agent from "../api/agent";
 import { history } from "../..";
 import { toast } from "react-toastify";
 import { RootStore } from "./rootStore";
-import { createAttendee, setActivityProps } from "../common/util/util";
+import { setActivityProps, createAttendee } from "../common/util/util";
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -14,7 +14,6 @@ import {
 
 export default class ActivityStore {
   rootStore: RootStore;
-
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
   }
@@ -27,7 +26,7 @@ export default class ActivityStore {
   @observable loading = false;
   @observable.ref hubConnection: HubConnection | null = null;
 
-  @action createHubConnection = (activityId: string) => {
+  @action createHubConnection = () => {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl("http://localhost:5000/chat", {
         accessTokenFactory: () => this.rootStore.commonStore.token!,
@@ -38,30 +37,17 @@ export default class ActivityStore {
     this.hubConnection
       .start()
       .then(() => console.log(this.hubConnection!.state))
-      .then(() => {
-        console.log("Attempting to join group");
-        this.hubConnection!.invoke("AddToGroup", activityId);
-      })
-      .catch((error) => console.log("Error establishing connection", error));
+      .catch((error) => console.log("Error establishing connection: ", error));
 
     this.hubConnection.on("ReceiveComment", (comment) => {
       runInAction(() => {
         this.activity!.comments.push(comment);
       });
     });
-
-    this.hubConnection.on("Send", (message) => {
-      toast.info(message);
-    });
   };
 
   @action stopHubConnection = () => {
-    this.hubConnection!.invoke("RemoveFromGroup", this.activity!)
-      .then(() => {
-        this.hubConnection!.stop();
-      })
-      .then(() => console.log("Connection stopped"))
-      .catch((err) => console.log(err));
+    this.hubConnection!.stop();
   };
 
   @action addComment = async (values: any) => {
