@@ -2,6 +2,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Activities;
 using Application.Interfaces;
+using Application.Profiles;
 using Application.User;
 using API.Middleware;
 using API.SignalR;
@@ -91,6 +92,7 @@ namespace API {
             services.AddScoped<IJwtGenerator, JwtGenerator> ();
             services.AddScoped<IUserAccessor, UserAccessor> ();
             services.AddScoped<IPhotoAccessor, PhotoAccessor> ();
+            services.AddScoped<IProfileReader, ProfileReader> ();
             services.Configure<CloudinarySettings> (Configuration.GetSection ("Cloudinary"));
         }
 
